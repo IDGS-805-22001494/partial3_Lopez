@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center text-gray-900 dark:text-white">Calificaciones por Grupo</h1>
+        <form action="{{ url_for('calificaciones') }}" method="post" novalidate class="max-w-sm mx-auto mb-8">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-5">
+                <label for="grupo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Seleccionar
+                    Grupo</label>
+                <select id="grupo" name="grupo" required
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value="">Seleccione un grupo</option>
+                    {% for grupo in grupos %}
+                    <option value="{{ grupo[0] }}" {% if grupo_seleccionado==grupo[0] %}selected{% endif %}>{{ grupo[0]
+                        }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Buscar</button>
+        </form>
+
+        <!-- Tabla de calificaciones -->
+        {% if grupo_seleccionado %}
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Calificaciones del Grupo: {{
+            grupo_seleccionado }}</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Nombre</th>
+                        <th scope="col" class="px-6 py-3">Apellido Paterno</th>
+                        <th scope="col" class="px-6 py-3">Apellido Materno</th>
+                        <th scope="col" class="px-6 py-3">Calificación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alumno, calificacion in alumnos_con_calificaciones %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="px-6 py-4">{{ alumno.nombre }}</td>
+                        <td class="px-6 py-4">{{ alumno.apellido_paterno }}</td>
+                        <td class="px-6 py-4">{{ alumno.apellido_materno }}</td>
+                        <td class="px-6 py-4">
+                            {{ calificacion | round(2) if calificacion else 'Sin calificación' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const flashMessages = document.querySelectorAll('#flash-message');
+        flashMessages.forEach(function (message) {
+            setTimeout(function () {
+                message.remove();
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}

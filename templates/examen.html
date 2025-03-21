@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center text-gray-900 dark:text-white">Examen</h1>
+
+        {% if not alumno %}
+        <form action="{{ url_for('examen') }}" method="post" novalidate class="max-w-sm mx-auto mb-8">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-5">
+                <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                <input type="text" id="nombre" name="nombre"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Nombre" required>
+            </div>
+            <div class="mb-5">
+                <label for="apellido_paterno" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apellido
+                    Paterno</label>
+                <input type="text" id="apellido_paterno" name="apellido_paterno"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Apellido Paterno" required>
+            </div>
+            <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Buscar
+                Alumno</button>
+        </form>
+        {% else %}
+        <!-- Add a back button to return to the search form if needed -->
+        <div class="max-w-2xl mx-auto mb-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                {{ alumno.nombre }} {{ alumno.apellido_paterno }} edad: {{ edad }} grupo: {{ alumno.grupo }}
+            </h2>
+            <div class="flex justify-end">
+                <a href="{{ url_for('examen') }}"
+                    class="flex items-center gap-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Buscar otro alumno
+                </a>
+            </div>
+        </div>
+        <form action="{{ url_for('guardar_respuestas') }}" method="post" novalidate class="max-w-2xl mx-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="alumno_id" value="{{ alumno.id }}">
+
+            {% for pregunta in preguntas %}
+            <div class="mb-6 p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                <p class="text-lg font-medium text-gray-900 dark:text-white">{{ pregunta.texto }}</p>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <input type="radio" id="p{{ pregunta.id }}_a" name="p{{ pregunta.id }}" value="a" required
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="p{{ pregunta.id }}_a"
+                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">a) {{ pregunta.opcion_a }}</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="p{{ pregunta.id }}_b" name="p{{ pregunta.id }}" value="b" required
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="p{{ pregunta.id }}_b"
+                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">b) {{ pregunta.opcion_b }}</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="p{{ pregunta.id }}_c" name="p{{ pregunta.id }}" value="c" required
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="p{{ pregunta.id }}_c"
+                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">c) {{ pregunta.opcion_c }}</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="p{{ pregunta.id }}_d" name="p{{ pregunta.id }}" value="d" required
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="p{{ pregunta.id }}_d"
+                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">d) {{ pregunta.opcion_d }}</label>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <button type="submit"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Guardar
+                Respuestas</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Script para eliminar mensajes Flash después de 3 segundos -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const flashMessages = document.querySelectorAll('#flash-message');
+        flashMessages.forEach(function (message) {
+            setTimeout(function () {
+                message.remove();
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}

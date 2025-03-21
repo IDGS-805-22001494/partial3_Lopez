@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "_macros.html" as macro %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-3">
+    <div class="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center text-gray-900 dark:text-white">Registro de Alumnos</h1>
+        <form action="" method="post" novalidate class="mt-8 space-y-6">
+            {{ form.csrf_token }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div class="mb-6">
+                    {{ macro.campoNuevo(form.nombre, class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white", placeholder="Nombre") }}
+                </div>
+                <div class="mb-6">
+                    {{ macro.campoNuevo(form.apellido_paterno, class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white", placeholder="Apellido Paterno") }}
+                </div>
+                <div class="mb-6">
+                    {{ macro.campoNuevo(form.apellido_materno, class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white", placeholder="Apellido Materno") }}
+                </div>
+                <div class="mb-6">
+                    {{ macro.campoNuevo(form.grupo, class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white", placeholder="Grupo Cursando") }}
+                </div>
+                <div class="mb-6">
+                    {{ macro.campoNuevo(form.fecha_nacimiento, class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white", placeholder="Fecha de Nacimiento") }}
+                </div>
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800">
+                    Registrar Alumno
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const flashMessages = document.querySelectorAll('#flash-message');
+        flashMessages.forEach(function (message) {
+            setTimeout(function () {
+                message.remove();
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}
